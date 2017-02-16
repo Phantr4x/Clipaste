@@ -21,8 +21,10 @@
 ## Acknowledgement
 
 - [electron](https://github.com/electron/electron)
-- vue
-- electron-vue
+- [vue](https://github.com/vuejs/vue)
+- [vuex](https://github.com/vuejs/vuex/)
+- [vue-router](https://github.com/vuejs/vue-router/)
+- [electron-vue](https://github.com/SimulatedGREG/electron-vue)
 
 ## License
 
