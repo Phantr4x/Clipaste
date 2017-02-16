@@ -1,7 +1,7 @@
 {
   "name": "clipaste",
   "version": "0.0.0",
-  "description": "Clipboard enhanced tool.",
+  "description": "Clipboard enhanced tool",
   "main": "./dist/main.js",
   "dependencies": {
     "vue": "^2.1.10",

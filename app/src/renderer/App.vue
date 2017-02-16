@@ -14,26 +14,19 @@
 <style>
   @import url(https://fonts.googleapis.com/css?family=Lato:300);
 
-  * {
-    margin: 0;
-    padding: 0;
-  }
+  * { margin: 0; padding: 0; outline: 0; -webkit-user-select:none; cursor: default; }
+  input { cursor: text; }
+  ol, ul { list-style: none; }
 
   html,
-  body { height: 100%; }
+  body {
+    width: 100%;
+    /*box-sizing: border-box;*/
+  }
+
 
   body {
-    align-items: center;
-    background:
-      radial-gradient(
-        ellipse at center,
-        rgba(255, 255, 255, 1) 0%,
-        rgba(229, 229, 229, .85) 100%
-      );
-    background-position: center;
-    display: flex;
-    font-family: Lato, Helvetica, sans-serif;
-    justify-content: center;
-    text-align: center;
+    font-family: caption, "Myriad Pro", "Avenir Next", "Helvetica Neue", "Arial";
+    color: #F5F7F9;
   }
 </style>
