@@ -1,29 +1,27 @@
-# Clipaste
+# clipaste
 
 > Clipboard enhanced tool.
 
-## Features
+## Build Setup
 
-- Clipboard history manage
-- File types recognize
-- Code highlight
-- ……
+``` bash
+# install dependencies
+npm install
 
-## Documentation
-- [Requirement Analysis]()
-- [Prototype Design]()
-- [UI&UX Design]()
+# serve with hot reload at localhost:9080
+npm run dev
 
-## Usage
+# build electron app for production
+npm run build
 
+# lint all JS/Vue component files in `app/src`
+npm run lint
 
+# run webpack in production
+npm run pack
+```
+More information can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/docs/npm_scripts.html).
 
-## Acknowledgement
+---
 
-- [electron](https://github.com/electron/electron)
-
-## License
-
-Licensed under the [MIT license](https://opensource.org/licenses/MITs).
-
-Copyright (c) 2017-present, Phantr4x
+This project was generated from [electron-vue](https://github.com/SimulatedGREG/electron-vue) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about this project can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
