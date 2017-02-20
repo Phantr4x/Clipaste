@@ -44,11 +44,13 @@
     width: 360px;
     height: 48px;
     padding: 0 8px;
-    border-bottom: 1px solid #464C5B;
+    border-bottom: 1px solid #2B2E38;
+    /*transition: box-shadow .24s ease-in-out;*/
   }
   .item:hover {
-    border-bottom: none;
+    /*border-bottom: none;*/
     background: #3091F2;
+    /*box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2);*/
   }
   .item:hover p.item-content {
     color: #F5F7F9;
@@ -76,6 +78,7 @@
     width: 88px;
     height: 48px;
     /*padding: 0 8px;*/
+    border-bottom: 1px solid #313540;
     background: #3091F2;
     opacity: 0;
   }

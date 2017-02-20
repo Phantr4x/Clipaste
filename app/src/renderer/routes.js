@@ -17,6 +17,11 @@ export default [
     component: require('components/MainView'),
   },
   {
+    path: '/preferences',
+    name: 'preferences',
+    component: require('components/PreferencesView'),
+  },
+  {
     path: '*',
     redirect: '/',
   },

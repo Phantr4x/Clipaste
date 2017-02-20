@@ -21,7 +21,6 @@
   html,
   body {
     width: 100%;
-    /*box-sizing: border-box;*/
   }
 
 

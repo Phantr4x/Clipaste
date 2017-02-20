@@ -32,7 +32,6 @@
     width: 360px;
     height: 480px;
     margin-top: 48px;
-    background: #313540;
     overflow-y: auto;
   }
 </style>
