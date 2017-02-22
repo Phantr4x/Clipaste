@@ -1,11 +1,7 @@
 <template>
   <div class="wrapper">
     <SearchBar></SearchBar>
-    <div class="contents">
-      <Item></Item>
-      <Item></Item>
-      <Item></Item>
-    </div>
+    <Contents></Contents>
     <FunctionBar></FunctionBar>
   </div>
 </template>
@@ -13,26 +9,18 @@
 <script>
   import SearchBar from './MainView/SearchBar';
   import FunctionBar from './MainView/FunctionBar';
-  import Item from './MainView/Item.vue';
+  import Contents from './MainView/Contents';
 
   export default {
     components: {
       SearchBar,
       FunctionBar,
-      Item,
+      Contents,
     },
     name: 'main',
   };
 </script>
 
 <style scoped>
-  .contents {
-    box-sizing: border-box;
-    position: fixed;
-    width: 360px;
-    height: 480px;
-    margin-top: 48px;
-    background: #313540;
-    overflow-y: auto;
-  }
+
 </style>

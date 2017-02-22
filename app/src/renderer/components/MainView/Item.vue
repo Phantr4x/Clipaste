@@ -1,113 +1,94 @@
 <template>
-  <div class="item">
-    <p class="item-content">{{ text }}</p>
-    <div class="tool-bar">
+  <li class="item">
+    <slot>
+      <p class="item-content"></p>
+    </slot>
+    <div class="extends">
       <ul>
-        <li><a href="" class="tool-bar-button"><i class="icon-pin">
+        <li><a class="extends-button" href="#">
           <svg width="32px" height="32px" viewBox="233 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-            <g id="icon-pin" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(233.000000, 0.000000)">
-              <g id="pin" transform="translate(4.000000, 4.000000)" fill="#E3E8EE">
-                <path d="M5,4 L5,6 L19,6 L19,4 L5,4 L5,4 Z M5,14 L9,14 L9,20 L15,20 L15,14 L19,14 L12,7 L5,14 L5,14 Z" id="Shape"></path>
+            <g id="icon-like-outline" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(233.000000, 0.000000)">
+              <g id="like-outline" transform="translate(7.000000, 9.000000)" fill="#657180">
+                <path d="M13.0209943,0 C11.4531932,0 9.75111932,0.699960227 8.90909091,2.1 C8.06710227,0.699960227 6.36498864,0 4.7971875,0 C2.05414205,0 0,1.71969318 0,4.60484659 C0,5.84925568 0.499625,7.46546023 1.62761932,8.80711364 C2.75553409,10.1488466 3.4265,10.8633636 5.61097727,12.3071136 C7.79545455,13.7509432 8.90909091,14 8.90909091,14 C8.90909091,14 10.0227273,13.7509432 12.2072045,12.3071136 C14.391642,10.8633636 15.0626477,10.1488466 16.1905625,8.80711364 C17.3185568,7.46546023 17.8181818,5.84925568 17.8181818,4.60484659 C17.8181818,1.71969318 15.7640398,0 13.0209943,0 L13.0209943,0 Z M15.7034659,8.39765341 C14.6354886,9.66799432 14.0258523,10.3423409 11.8562898,11.7762273 C10.2559545,12.8340227 9.26103977,13.220017 8.90905114,13.3366307 C8.5570625,13.2199773 7.5621875,12.8339432 5.9618125,11.7762273 C3.79228977,10.3423409 3.18265341,9.66803409 2.11463636,8.39761364 C1.63477841,7.82683523 1.24532386,7.15376136 0.988431818,6.45101705 C0.758147727,5.8209375 0.636363636,5.18254545 0.636363636,4.60484659 C0.636363636,3.40036932 1.03930114,2.39177273 1.80158523,1.68811364 C2.16510795,1.35255114 2.60332386,1.09184091 3.10422159,0.913181818 C3.61907955,0.729471591 4.18866477,0.636363636 4.7971875,0.636363636 C6.30926705,0.636363636 7.70922727,1.339625 8.36376705,2.42796591 L8.90909091,3.33470455 L9.45441477,2.42796591 C10.1089943,1.339625 11.5089545,0.636363636 13.0209943,0.636363636 C13.629517,0.636363636 14.1991023,0.729471591 14.7139602,0.913142045 C15.214858,1.09184091 15.6530739,1.35255114 16.0165966,1.68807386 C16.7788807,2.39177273 17.1818182,3.40036932 17.1818182,4.60484659 C17.1818182,5.18254545 17.0600341,5.8209375 16.8296705,6.45101705 C16.5728182,7.15372159 16.1833636,7.82683523 15.7034659,8.39765341 L15.7034659,8.39765341 Z" id="Shape"></path>
               </g>
             </g>
           </svg>
-        </i></a></li>
-        <li><a href="" class="tool-bar-button"><i class="icon-delete">
-          <svg width="32px" height="32px" viewBox="273 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        </a></li>
+        <li><a class="extends-button" href="#">
+          <i class="icon-delete">
+            <svg width="32px" height="32px" viewBox="273 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
               <g id="icon-delete" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(273.000000, 0.000000)">
-                <g id="delete" transform="translate(4.000000, 4.000000)" fill="#E3E8EE">
-                  <path d="M6,19 C6,20.1 6.9,21 8,21 L16,21 C17.1,21 18,20.1 18,19 L18,7 L6,7 L6,19 L6,19 Z M19,4 L15.5,4 L14.5,3 L9.5,3 L8.5,4 L5,4 L5,6 L19,6 L19,4 L19,4 Z" id="Shape"></path>
+                <g id="delete" transform="translate(8.000000, 8.000000)" fill="#657180">
+                  <g id="Group">
+                    <path d="M13.6961538,2.34230769 C10.5730769,-0.780769231 5.50769231,-0.780769231 2.38076923,2.34230769 C-0.746153846,5.46538462 -0.742307692,10.5307692 2.38076923,13.6576923 C5.50384615,16.7807692 10.5692308,16.7807692 13.6961538,13.6576923 C16.8230769,10.5346154 16.8192308,5.46538462 13.6961538,2.34230769 L13.6961538,2.34230769 Z M13.2230769,13.1846154 C10.3653846,16.0423077 5.71153846,16.0423077 2.85384615,13.1846154 C-0.00384615385,10.3269231 -0.00384615385,5.67307692 2.85384615,2.81538462 C5.71153846,-0.0423076923 10.3653846,-0.0423076923 13.2230769,2.81538462 C16.0846154,5.67307692 16.0846154,10.3269231 13.2230769,13.1846154 L13.2230769,13.1846154 Z" id="Shape"></path>
+                    <polygon id="Shape" points="11.2769231 4.30769231 8.03076923 7.54615385 4.8 4.32307692 4.34615385 4.77692308 7.57692308 8 4.34615385 11.2230769 4.8 11.6769231 8.03076923 8.45384615 11.2769231 11.6923077 11.7307692 11.2384615 8.48461538 8 11.7307692 4.76153846"></polygon>
+                  </g>
                 </g>
               </g>
-          </svg>
-        </i></a></li>
+            </svg>
+          </i>
+        </a></li>
       </ul>
     </div>
-  </div>
+  </li>
 </template>
 
 <script>
   export default {
     data() {
       return {
-        text: 'Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum',
+        isLiked: false,
       };
+    },
+    props: ['index'],
+    methods: {
     },
   };
 </script>
 
 <style scoped>
-  .item {
-    float: left;
-    position: relative;
+  li.item {
     box-sizing: border-box;
+    position: relative;
     width: 360px;
     height: 48px;
-    padding: 0 8px;
-    border-bottom: 1px solid #2B2E38;
-    /*transition: box-shadow .24s ease-in-out;*/
+    padding: 0 24px;
   }
-  .item:hover {
-    /*border-bottom: none;*/
-    background: #3091F2;
-    /*box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2);*/
-  }
-  .item:hover p.item-content {
-    color: #F5F7F9;
-  }
-  .item:hover .tool-bar {
-    opacity: 1;
+  li.item:hover p.item-content {
+    /*font-weight: bold;*/
   }
 
   p.item-content {
-    height: 32px;
-    margin: 8px 0;
-    /*padding-right: 32px;*/
-    font: normal 16px/32px caption, "Myriad Pro", "Avenir Next", "Helvetica Neue", "Arial";
-    color: #9EA7B4;
+    box-sizing: border-box;
+    height: 48px;
+    font: normal 16px/48px caption, "Myriad Pro", "Avenir Next", "Helvetica Neue", "Arial";
+    color: #2B2F38;
     overflow: hidden;
-    text-overflow:ellipsis;
+    text-overflow: ellipsis;
     white-space: nowrap;
+    transition: font-weight .24s ease-in-out;
   }
 
-  .tool-bar {
-    box-sizing: border-box;
+  .extends, .extends ul {
     position: absolute;
-    top: 0;
     right: 0;
-    width: 88px;
+    top: 0;
+    width: 64px;
     height: 48px;
-    /*padding: 0 8px;*/
-    border-bottom: 1px solid #313540;
-    background: #3091F2;
-    opacity: 0;
   }
-  a.tool-bar-button, a.tool-bar-button i {
-    display: inline-block;
+  .extends { float: right; }
+  .extends ul { float: left; padding-right: 8px; }
+
+  .extends ul li {
+    float: left;
+  }
+  .extends ul li a,
+  .extends ul li a i {
+    float: left;
     width: 32px;
     height: 32px;
   }
-  a.tool-bar-button {
-    float: left;
-    margin: 8px 0 8px 8px;
-  }
-  a.tool-bar-button i.icon-pin {
-    transform: scale(1.05);
-    transition: transform .24s cubic-bezier(0.95, 0.05, 0.795, 0.035);
-  }
-  a.tool-bar-button:hover i.icon-pin {
-    transform: scale(1.2) translateY(-3px);
-  }
-  a.tool-bar-button i.icon-delete {
-    transition: transform .24s cubic-bezier(0.6, -0.28, 0.735, 0.045);
-  }
-  a.tool-bar-button:hover i.icon-delete {
-    transform: rotate(-15deg) scale(1.2);
-  }
-  a.tool-bar-button i svg g g {
-    transition: fill .24s ease-in-out;
-  }
-  a.tool-bar-button:hover i svg g g {
-    fill: #F5F7F9;
+  .extends ul li a {
+    margin: 8px 0;
   }
 </style>

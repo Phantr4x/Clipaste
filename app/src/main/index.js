@@ -23,7 +23,7 @@ app.on('ready', () => {
     skipTaskBar: true,
     show: false,
     frame: false,
-    backgroundColor: '#313540',
+    backgroundColor: '#FFFFFF',
     transparent: false,
     // titleBarStyle: 'hidden'
   });

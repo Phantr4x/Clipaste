@@ -26,6 +26,6 @@
 
   body {
     font-family: caption, "Myriad Pro", "Avenir Next", "Helvetica Neue", "Arial";
-    color: #F5F7F9;
+    color: #2B2F38;
   }
 </style>
