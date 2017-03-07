@@ -1,33 +1,35 @@
 <template>
   <div class="wrapper">
-    <SearchBar></SearchBar>
-    <Contents></Contents>
+    <Clipboard :items="items"></Clipboard>
     <FunctionBar></FunctionBar>
   </div>
 </template>
 
 <script>
-  import { clipboard } from 'electron';
+  import fs from 'fs';
 
-  import SearchBar from './MainView/SearchBar';
+  let temp = require('./../../temp.json');
+  fs.watchFile('/Users/Phantr4x/GitHub/clipaste/app/src/temp.json', {
+    persistent: true,
+    interval: 120,
+  }, () => {
+    temp = require('/Users/Phantr4x/GitHub/clipaste/app/src/temp.json');
+  });
+
+  import Clipboard from './MainView/Clipboard';
   import FunctionBar from './MainView/FunctionBar';
-  import Contents from './MainView/Contents';
-
-  let txt;
 
   export default {
     data() {
-      txt = clipboard.readText();
       return {
-        txt,
+        items: temp,
       };
     },
-    components: {
-      SearchBar,
-      FunctionBar,
-      Contents,
-    },
     methods: {
+    },
+    components: {
+      Clipboard,
+      FunctionBar,
     },
     name: 'main',
   };

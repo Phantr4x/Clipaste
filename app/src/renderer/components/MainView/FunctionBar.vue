@@ -57,6 +57,9 @@
         isSettingsActive: false,
       };
     },
+    props: {
+      clippings: Array,
+    },
     methods: {
       clearTrigger() {
         this.isClearActive = !this.isClearActive;

@@ -13,13 +13,9 @@ import {
 import yaml from 'js-yaml';
 const sqlite3 = require('sqlite3').verbose();
 
-
 import doob from '../modules/doob';
 import clipocher from '../modules/clipocher';
 import clippingsHandler from '../modules/clippings-handler';
-
-
-
 
 const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:${require('../../../config').port}`
@@ -39,9 +35,15 @@ try {
 // 创建数据库
 const db = new sqlite3.Database(`${__dirname}/../clipaste.db`);
 db.serialize(() => {
-  // db.run('DROP TABLE CLIPPINGS;')
-  db.run('CREATE TABLE IF NOT EXISTS CLIPPINGS (ID integer PRIMARY KEY NOT NULL, CLIPPING blob, IS_PINNED boolean NOT NULL DEFAULT(0));');
-  db.run('DELETE FROM CLIPPINGS;');
+  // db.run('DROP TABLE clipboard;');
+  db.run('CREATE TABLE IF NOT EXISTS clipboard (id integer PRIMARY KEY NOT NULL, clipping text, is_image boolean NOT NULL DEFAULT(0), is_pinned boolean NOT NULL DEFAULT(0));');
+  db.run('DELETE FROM clipboard;');
+  db.all(`SELECT * FROM clipboard`, (err, rows) => {
+    if (err) throw err;
+    fs.writeFile(`${__dirname}/../temp.json`, JSON.stringify(rows), (err) => {
+      if (err) throw err;
+    });
+  });
 });
 
 let output;
@@ -59,20 +61,19 @@ app.on('ready', () => {
   // 轮询系统剪贴板
   let timestamp;
   clipboardWatcher = clipocher({
-    delay: 300,
+    delay: 120,
     ontextchange: (text) => {
       timestamp = new Date().getTime();
       console.time('TextChange');
-
       // 判断文本大小
       text.length <= SETTINGS.GENERAL.MAX_SIZE * 1048576
         // 插入数据 [文本]
-        ? doob.insert(db, 'CLIPPINGS', timestamp, clippingsHandler(timestamp, text), false)
+        ? doob.insert(db, 'clipboard', timestamp, clippingsHandler(timestamp, text), false, false)
         : console.log(`Text is larger than ${SETTINGS.GENERAL.MAX_SIZE}MB!`);
       console.timeEnd('TextChange');
 
       // 写入JSON
-      db.all(`SELECT * FROM CLIPPINGS`, (err, rows) => {
+      db.all(`SELECT * FROM clipboard`, (err, rows) => {
         if (err) throw err;
         fs.writeFile(`${__dirname}/../temp.json`, JSON.stringify(rows), (err) => {
           if (err) throw err;
@@ -84,16 +85,15 @@ app.on('ready', () => {
       timestamp = new Date().getTime();
       console.time('ImageChange');
       const imgDataURL = image.toDataURL();
-
       // 判断图像大小
       imgDataURL.length <= SETTINGS.GENERAL.MAX_SIZE * 1048576
         // 插入数据 [图片绝对路径]
-        ? doob.insert(db, 'CLIPPINGS', timestamp, clippingsHandler(timestamp, imgDataURL), false)
+        ? doob.insert(db, 'clipboard', timestamp, clippingsHandler(timestamp, imgDataURL), true, false)
         : console.log(`Image is larger than ${SETTINGS.GENERAL.MAX_SIZE}MB!`);
       console.timeEnd('ImageChange');
 
       // 写入JSON
-      db.all(`SELECT * FROM CLIPPINGS`, (err, rows) => {
+      db.all(`SELECT * FROM clipboard`, (err, rows) => {
         if (err) throw err;
         fs.writeFile(`${__dirname}/../temp.json`, JSON.stringify(rows), (err) => {
           if (err) throw err;
