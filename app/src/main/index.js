@@ -1,142 +1,39 @@
-import fs from 'fs';
+/* eslint-disable */
 import {
   app,
-  ipcMain,
   BrowserWindow,
   globalShortcut,
-  Menu,
   Tray,
   screen,
+  ipcMain,
+  ipcRenderer,
   clipboard,
-  ipcRenderer
+  nativeImage
 } from 'electron';
-import yaml from 'js-yaml';
-const sqlite3 = require('sqlite3').verbose();
+import fs from 'fs';
+import path from 'path';
 
-import doob from '../modules/doob';
-import clipocher from '../modules/clipocher';
-import clippingsHandler from '../modules/clippings-handler';
+global.settings = require('../settings.json');
 
-const winURL = process.env.NODE_ENV === 'development'
-  ? `http://localhost:${require('../../../config').port}`
-  : `file://${__dirname}/index.html`;
-
-// 加载配置文件
-let SETTINGS;
-try {
-  SETTINGS = yaml.safeLoad(
-    fs.readFileSync(`${__dirname}/../settings.yml`, 'utf8')
-  );
-  // console.log(SETTINGS);
-} catch (e) {
-  console.log(e);
-}
-
-// 创建数据库
-const db = new sqlite3.Database(`${__dirname}/../clipaste.db`);
-db.serialize(() => {
-  // db.run('DROP TABLE clipboard;');
-  db.run('CREATE TABLE IF NOT EXISTS clipboard (id integer PRIMARY KEY NOT NULL, clipping text, is_image boolean NOT NULL DEFAULT(0), is_pinned boolean NOT NULL DEFAULT(0));');
-  db.run('DELETE FROM clipboard;');
-  db.all(`SELECT * FROM clipboard`, (err, rows) => {
-    if (err) throw err;
-    fs.writeFile(`${__dirname}/../temp.json`, JSON.stringify(rows), (err) => {
-      if (err) throw err;
-    });
-  });
-});
-
-let output;
-let clipboardWatcher, sqliteWatcher;
-app.on('ready', () => {
-  app.dock.hide();
-
-  // 初始化窗口和托盘
-  mainWindowConstructor();
-  trayMenuConstructor();
-
-  // 全局注册快捷键
-  shortcutRegister();
-
-  // 轮询系统剪贴板
-  let timestamp;
-  clipboardWatcher = clipocher({
-    delay: 120,
-    ontextchange: (text) => {
-      timestamp = new Date().getTime();
-      console.time('TextChange');
-      // 判断文本大小
-      text.length <= SETTINGS.GENERAL.MAX_SIZE * 1048576
-        // 插入数据 [文本]
-        ? doob.insert(db, 'clipboard', timestamp, clippingsHandler(timestamp, text), false, false)
-        : console.log(`Text is larger than ${SETTINGS.GENERAL.MAX_SIZE}MB!`);
-      console.timeEnd('TextChange');
-
-      // 写入JSON
-      db.all(`SELECT * FROM clipboard`, (err, rows) => {
-        if (err) throw err;
-        fs.writeFile(`${__dirname}/../temp.json`, JSON.stringify(rows), (err) => {
-          if (err) throw err;
-          // console.log(`temp.json saved.`);
-        });
-      });
-    },
-    onimagechange: (image) => {
-      timestamp = new Date().getTime();
-      console.time('ImageChange');
-      const imgDataURL = image.toDataURL();
-      // 判断图像大小
-      imgDataURL.length <= SETTINGS.GENERAL.MAX_SIZE * 1048576
-        // 插入数据 [图片绝对路径]
-        ? doob.insert(db, 'clipboard', timestamp, clippingsHandler(timestamp, imgDataURL), true, false)
-        : console.log(`Image is larger than ${SETTINGS.GENERAL.MAX_SIZE}MB!`);
-      console.timeEnd('ImageChange');
-
-      // 写入JSON
-      db.all(`SELECT * FROM clipboard`, (err, rows) => {
-        if (err) throw err;
-        fs.writeFile(`${__dirname}/../temp.json`, JSON.stringify(rows), (err) => {
-          if (err) throw err;
-          // console.log(`temp.json saved.`);
-        });
-      });
-    },
-  });
-});
-
-app.on('activate', () => {
-  if (mainWindow === null) {
-    mainWindowConstructor();
-  }
-});
-
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
-});
-
-app.on('will-quit', () => {
-  // global.clearInterval(poller);
-  db.close();
-  clipboardWatcher.stop();
-  clearInterval(sqliteWatcher);
-  // ipcMain.removeAllListeners();
-  globalShortcut.unregisterAll();
-});
+const winURL = process.env.NODE_ENV === 'development' ?
+  `http://localhost:${require('../../../config').port}` :
+  `file://${__dirname}/index.html`;
 
 let mainWindow;
+let trayMenu;
+
+// 主窗口构造器
 const mainWindowConstructor = () => {
   mainWindow = new BrowserWindow({
     height: 576,
     width: 360,
-    // resizable: false,
+    resizable: false,
     movable: false,
     alwaysOnTop: true,
     skipTaskBar: true,
     show: false,
     frame: false,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#272527",
     transparent: false,
   });
   mainWindow.loadURL(winURL);
@@ -146,13 +43,14 @@ const mainWindowConstructor = () => {
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
+  // eslint-disable-next-line no-console
   console.log('MainWindow Start');
 };
 
-let trayMenu;
+// 托盘构造器
 const trayMenuConstructor = () => {
-  trayMenu = new Tray(`${__dirname}/../../icons/trays/tray@5x.png`);
-  trayMenu.setPressedImage(`${__dirname}/../../icons/trays/tray-pressed@5x.png`);
+  trayMenu = new Tray(`${__dirname}/imgs/tray@5x.png`);
+  trayMenu.setPressedImage(`${__dirname}/imgs/tray-pressed@5x.png`);
   let times = 0;
   trayMenu.on('click', () => {
     if (times++ === 0) {
@@ -162,16 +60,47 @@ const trayMenuConstructor = () => {
     mainWindow.focus();
   });
   trayMenu.setToolTip('Clipaste');
+  // eslint-disable-next-line no-console
   console.log('TrayMenu Start');
 };
 
+// 快捷键注册器
 const shortcutRegister = () => {
-  // Show clipboard
-  if (!globalShortcut.isRegistered(SETTINGS.SHORTCUTS.SHOW_CLIPBOARD)) {
-    globalShortcut.register(SETTINGS.SHORTCUTS.SHOW_CLIPBOARD, () => {
+  // 注册快捷键 => 展示剪贴板
+  if (!globalShortcut.isRegistered(global.settings.shortcuts.show_clipboard)) {
+    globalShortcut.register(global.settings.shortcuts.show_clipboard, () => {
       mainWindow.show();
     });
   } else {
-    console.log(`Registration for ${SETTINGS.SHORTCUTS.SHOW_CLIPBOARD} failed!`);
+    // eslint-disable-next-line no-console
+    console.log(`Registration for ${global.settings.shortcuts.show_clipboard} failed!`);
   }
 };
+
+// let clipWatcher;
+app.on('ready', () => {
+  // 初始化 窗口&托盘
+  app.dock.hide();
+  mainWindowConstructor();
+  trayMenuConstructor();
+  // 注册 全局快捷键
+  shortcutRegister();
+  // 变更 Vue.js开发工具版本
+  // BrowserWindow.removeDevToolsExtension('Vue.js devtools');
+  // BrowserWindow.addDevToolsExtension('/Users/Phantr4x/Workspace/vue-devtools/shells/chrome');
+});
+
+app.on('activate', () => {
+  if (mainWindow === null) mainWindowConstructor();
+  if (trayMenu === null) trayMenuConstructor();
+});
+
+app.on('will-quit', () => {
+  globalShortcut.unregisterAll();
+});
+
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});

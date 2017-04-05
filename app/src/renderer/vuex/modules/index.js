@@ -1,3 +1,4 @@
+/* eslint-disable */
 const files = require.context('.', false, /\.js$/);
 const modules = {};
 

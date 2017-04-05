@@ -1,3 +1,4 @@
+/* eslint-disable */
 import Vue from 'vue';
 import Vuex from 'vuex';
 
@@ -11,5 +12,5 @@ export default new Vuex.Store({
   actions,
   getters,
   modules,
-  strict: true,
+  strict: process.env.NODE_ENV !== 'production',
 });

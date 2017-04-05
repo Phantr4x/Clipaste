@@ -1,17 +1,12 @@
 {
   "name": "clipaste",
   "version": "0.0.0",
-  "description": "Clipboard enhanced tool",
+  "description": "Clipboard enhanced tool.",
   "main": "./dist/main.js",
   "dependencies": {
-    "babel-runtime": "^6.23.0",
-    "js-yaml": "^3.8.2",
-    "sqlite3": "^3.1.8",
-    "vue": "^2.1.10",
-    "vue-electron": "^1.0.6",
-    "vue-resource": "^1.0.3",
-    "vue-router": "^2.1.2",
-    "vuex": "^2.1.1"
+    "fuse.js": "^2.6.2",
+    "vue": "^2.2.5",
+    "vuex": "^2.2.1"
   },
   "devDependencies": {},
   "author": "Phantr4x <phantr4x@gmail.com>"

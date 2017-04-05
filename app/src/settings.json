@@ -1,0 +1,13 @@
+{
+  "general": {
+    "max_size": 5,
+    "sync": false,
+    "sounds": false
+  },
+  "shortcuts": {
+    "show_clipboard": "CmdOrCtrl+Shift+V"
+  },
+  "blacklist": {
+
+  }
+}
