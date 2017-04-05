@@ -2,6 +2,10 @@
 
 > Clipboard enhanced tool.
 
+English Documentation: [README.md](https://github.com/Phantr4x/clipaste/blob/master/README.md)
+
+中文文档：[README_zh.md](https://github.com/Phantr4x/clipaste/blob/master/README_zh.md)
+
 ## Features
 
 - Clipboard history manage
@@ -28,4 +32,4 @@
 
 Licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
-Copyright (c) 2017-present, Phantr4x
+Copyright (c) 2017-present, [Phantr4x](https://github.com/Phantr4x)

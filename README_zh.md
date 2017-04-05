@@ -28,4 +28,4 @@
 
 本软件通过 [MIT 协议](https://opensource.org/licenses/MIT) 分发
 
-Copyright (c) 2017-present, Phantr4x
+Copyright (c) 2017-present, [Phantr4x](https://github.com/Phantr4x)
