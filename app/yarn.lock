@@ -6,10 +6,6 @@ fuse.js@^2.6.2:
   version "2.6.2"
   resolved "http://r.cnpmjs.org/fuse.js/download/fuse.js-2.6.2.tgz#d5d994fda96f543b5a51df38b72cec9cc60d9dea"
 
-material-design-icons@^3.0.1:
-  version "3.0.1"
-  resolved "http://r.cnpmjs.org/material-design-icons/download/material-design-icons-3.0.1.tgz#9a71c48747218ebca51e51a66da682038cdcb7bf"
-
 vue@^2.2.5:
   version "2.2.6"
   resolved "http://r.cnpmjs.org/vue/download/vue-2.2.6.tgz#451714b394dd6d4eae7b773c40c2034a59621aed"

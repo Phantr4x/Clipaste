@@ -6,6 +6,9 @@ const state = {
 }
 
 const mutations = {
+  [types.IMPORT_DATA] (state, payload) {
+    state.storage = [...payload];
+  },
   [types.APPEND_TEXT_CONTENT] (state, payload) {
     state.storage = [...state.storage, { id: payload.id, text: payload.text, star: payload.star }];
   },
@@ -15,6 +18,19 @@ const mutations = {
   [types.UPDATE_TEXT_CONTENT] (state, payload) {
     for (let item of state.storage) {
       if (item.text === payload.text) {
+        item.id = payload.updateId;
+      }
+    }
+  },
+  [types.APPEND_IMAGE_CONTENT] (state, payload) {
+    state.storage = [...state.storage, { id: payload.id, image: payload.image, star: payload.star }];
+  },
+  [types.DELETE_IMAGE_CONTENT] (state, payload) {
+    state.storage = state.storage.filter((elm, idx, arr) => elm.id !== payload);
+  },
+  [types.UPDATE_IMAGE_CONTENT] (state, payload) {
+    for (let item of state.storage) {
+      if (item.image === payload.image) {
         item.id = payload.updateId;
       }
     }

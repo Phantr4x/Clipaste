@@ -23,10 +23,16 @@
           class="item"
           v-for="(item, index) in result"
           @dblclick.capture="duplicate(item)"
-          :style="`${item.star ? 'border-left: 3px solid #22C7FC;' : ''}`">
-          <p class="item-text"
+          :class="item.star ? 'asterisk': ''">
+          <p
+            class="item-text"
             v-if="item.text">
             {{ item.text }}
+          </p>
+          <p
+            class="item-image"
+            v-if="item.image">
+            <img :src="imageGenerator(item.image)" :alt="item.id" />
           </p>
           <div class="item-extends">
             <button
@@ -49,7 +55,8 @@
 </template>
 
 <script>
-  import { clipboard } from 'electron';
+  /* eslint-disable no-console */
+  import { ipcRenderer, clipboard, nativeImage } from 'electron';
   import Fuse from 'fuse.js';
 
   // import toast from 'native-toast';
@@ -85,22 +92,53 @@
         return result;
       },
     },
+
     methods: {
       duplicate(item) {
-        if (item.text) clipboard.writeText(item.text);
+        console.time('Duplicate');
+        if (item.text) {
+          clipboard.writeText(item.text);
+        }
+        if (item.image) {
+          clipboard.writeImage(nativeImage.createFromPath(item.image));
+        }
+        console.timeEnd('Duplicate');
       },
       asterisk(item) {
+        console.time('Asterisk');
         this.$store.commit('CHANGE_STAR_STATUS', item.id);
+        console.timeEnd('Asterisk');
       },
       deprecate(item) {
-        this.$store.commit('DELETE_TEXT_CONTENT', item.id);
+        console.time('Deprecate');
+        if (item.text) {
+          this.$store.commit('DELETE_TEXT_CONTENT', item.id);
+        }
+        if (item.image) {
+          ipcRenderer.send('image-delete', item.id);
+          this.$store.commit('DELETE_IMAGE_CONTENT', item.id);
+        }
+        console.timeEnd('Deprecate');
+
+        console.time('[ContentSync]');
+        ipcRenderer.send('content-sync', JSON.stringify(this.$store.state.source.storage));
+        console.timeEnd('[ContentSync]');
+      },
+      imageGenerator(imgURL) {
+        console.time('ImageGenerate');
+        const img = nativeImage.createFromPath(imgURL)
+          .resize({ quality: 'good' })
+          .crop({ x: 0, y: 0, width: 360, height: 48 })
+          .toDataURL();
+        console.timeEnd('ImageGenerate');
+        return img;
       },
     },
   };
 </script>
 
 <!-- <style src="components/assets/native-toast.css"></style> -->
-
+<!-- <style src="components/assets/animation.css"></style> -->
 <style scoped>
 .filters {
   box-sizing: border-box;
@@ -127,7 +165,7 @@
   border-right: none;
   border-bottom: 1px solid #2D2B2D;
   background: #161416;
-  font: normal 14px/32px Anonymous Pro, Andale Mono, PT Mono, 'Helvetica Neue', Helvetica, PingFang SC, Microsoft Jhenghei, Microsoft YaHei, Arial, sans-serif;
+  font: normal 14px/32px "PT Mono", Monospace, "Source Han Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #FFFFFF;
   border-radius: 4px;
 }
@@ -182,7 +220,7 @@
   bottom: 2px;
   border-radius: 50%;
   background-color: #383638;
-  transition: .2s cubic-bezier(.645,.045,.355,1);
+  transition: transform .2s cubic-bezier(.645,.045,.355,1);
 }
 
 .filters-switch input:checked + .filters-switch-slider {
@@ -213,7 +251,6 @@
 li.item {
   box-sizing: border-box;
   position: relative;
-  padding: 0 16px;
   border-top: 1px solid #272527;
   border-bottom: 1px solid #272527;
   background: #272527;
@@ -221,17 +258,26 @@ li.item {
   transition: background .2s cubic-bezier(.645,.045,.355,1);
 }
 li.item:hover {
-  border-top: 1px solid #171517;
+  border-top: 1px solid #161416;
   border-bottom: 1px solid #2D2B2D;
   background: #161416;
 }
 
 p.item-text {
-  margin: 8px 0;
+  margin: 8px 16px;
   padding-bottom: 1px;
-  /*font: 300 14px/1.4 Lato, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;*/
   font: normal 14px/1.4 Andale Mono, PT Mono, 'Helvetica Neue', Helvetica, PingFang SC, Microsoft Jhenghei, Microsoft YaHei, Arial, sans-serif;
   color: #FFFFFF;
+}
+
+p.item-image {
+  height: 48px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+p.item-image img {
+  height: 100%;
 }
 
 .item-extends {
@@ -239,7 +285,6 @@ p.item-text {
   top: 0;
   right: 0;
   height: 100%;
-  background: #161416;
   opacity: 0;
   transition: opacity .2s cubic-bezier(.645,.045,.355,1);
 }
@@ -249,7 +294,7 @@ p.item-text {
   border: none;
   width: 36px;
   height: 100%;
-  background: #161416;
+  background-color: rgba(22,20,22,0.9);
   color: #FFFFFF;
   cursor: pointer;
   transition: color .2s cubic-bezier(.645,.045,.355,1);
@@ -266,5 +311,9 @@ p.item-text {
 
 li.item:hover .item-extends {
   opacity: 1;
+}
+
+.asterisk {
+  border-left: 3px solid #22C7FC;
 }
 </style>

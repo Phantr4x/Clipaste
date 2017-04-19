@@ -6,14 +6,20 @@ import {
   Tray,
   screen,
   ipcMain,
-  ipcRenderer,
   clipboard,
   nativeImage
 } from 'electron';
 import fs from 'fs';
 import path from 'path';
+// import crypto from 'crypto';
 
 global.settings = require('../settings.json');
+global.paths = {
+  home: app.getPath('home'),
+  appData: app.getPath('appData'),
+  temp: app.getPath('temp'),
+  downloads: app.getPath('downloads'),
+};
 
 const winURL = process.env.NODE_ENV === 'development' ?
   `http://localhost:${require('../../../config').port}` :
@@ -22,7 +28,6 @@ const winURL = process.env.NODE_ENV === 'development' ?
 let mainWindow;
 let trayMenu;
 
-// 主窗口构造器
 const mainWindowConstructor = () => {
   mainWindow = new BrowserWindow({
     height: 576,
@@ -47,10 +52,10 @@ const mainWindowConstructor = () => {
   console.log('MainWindow Start');
 };
 
-// 托盘构造器
 const trayMenuConstructor = () => {
-  trayMenu = new Tray(`${__dirname}/imgs/tray@5x.png`);
-  trayMenu.setPressedImage(`${__dirname}/imgs/tray-pressed@5x.png`);
+  trayMenu = new Tray(`${__dirname}/icons/tray@5x.png`);
+  trayMenu.setPressedImage(`${__dirname}/icons/tray-pressed@5x.png`);
+  // trayMenu = new Tray(`${__dirname}/../../dist/icons/tray@5x.png`);
   let times = 0;
   trayMenu.on('click', () => {
     if (times++ === 0) {
@@ -64,9 +69,7 @@ const trayMenuConstructor = () => {
   console.log('TrayMenu Start');
 };
 
-// 快捷键注册器
 const shortcutRegister = () => {
-  // 注册快捷键 => 展示剪贴板
   if (!globalShortcut.isRegistered(global.settings.shortcuts.show_clipboard)) {
     globalShortcut.register(global.settings.shortcuts.show_clipboard, () => {
       mainWindow.show();
@@ -77,22 +80,70 @@ const shortcutRegister = () => {
   }
 };
 
-// let clipWatcher;
+const sourceGenerator = () => {
+  const appDataPath = `${global.paths.appData}/Clipaste`;
+
+  if (!fs.existsSync(appDataPath)) {
+    fs.mkdirSync(appDataPath, (err) => {
+      if (err) throw err;
+    });
+  }
+
+  if (!fs.existsSync(`${appDataPath}/temp`)) {
+    fs.mkdirSync(`${appDataPath}/temp`, (err) => {
+      if (err) throw err;
+    });
+  }
+
+  if (!fs.existsSync(`${appDataPath}/source.json`)) {
+    fs.writeFileSync(`${appDataPath}/source.json`, '[]', (err) => {
+      if (err) throw err;
+    });
+  }
+};
+
 app.on('ready', () => {
-  // 初始化 窗口&托盘
   app.dock.hide();
   mainWindowConstructor();
   trayMenuConstructor();
-  // 注册 全局快捷键
   shortcutRegister();
-  // 变更 Vue.js开发工具版本
+  sourceGenerator();
+
+  global.history = fs.readFileSync(`${global.paths.appData}/Clipaste/source.json`, 'utf-8');
+
   // BrowserWindow.removeDevToolsExtension('Vue.js devtools');
   // BrowserWindow.addDevToolsExtension('/Users/Phantr4x/Workspace/vue-devtools/shells/chrome');
+
+  ipcMain.on('image-append', (event, fileName, img) => {
+    fs.writeFile(`${global.paths.appData}/Clipaste/temp/${fileName}.png`, img, (err) => {
+      if (err) throw err;
+      console.log(`[APPEND] ${global.paths.appData}/Clipaste/temp/${fileName}.png`);
+    });
+  });
+
+  ipcMain.on('image-delete', (event, fileName) => {
+    fs.unlink(`${global.paths.appData}/Clipaste/temp/${fileName}.png`, (err) => {
+      if (err) throw err;
+      console.log(`[DELETE] ${global.paths.appData}/Clipaste/temp/${fileName}.png`);
+    });
+  });
+
+  ipcMain.on('content-sync', (event, storage) => {
+    fs.writeFile(`${global.paths.appData}/Clipaste/source.json`, storage, (err) => {
+      if (err) throw err;
+      console.log(`[SYNC] ${global.paths.appData}/Clipaste/source.json`);
+    });
+  });
+
+  // ipcMain.on('checksum', (event, buffer, type = 'md5') => {
+  //   const hash = crypto.createHash(type);
+  //   event.returnValue = hash.update(buffer).digest('hex');
+  // });
 });
 
 app.on('activate', () => {
   if (mainWindow === null) mainWindowConstructor();
-  if (trayMenu === null) trayMenuConstructor();
+  if (trayMenu === null)   trayMenuConstructor();
 });
 
 app.on('will-quit', () => {
