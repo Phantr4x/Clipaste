@@ -8,7 +8,9 @@ English Documentation: [README.md](https://github.com/Phantr4x/clipaste/blob/mas
 
 ## Features
 
-- Clipboard history manage
+- Text history manage support
+- Image history manage support
+- Local sync
 - ……
 
 ## Documentation
